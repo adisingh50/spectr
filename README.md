@@ -1,2 +1,3 @@
-# spectr
-CS7643 Final Project. Semantic Segmentation on Self Driving Datasets using CNN Encoding + Transformer Decoding.
+# SPECTR: Semantic Segmentation using CNN Encoding and Transformer Decoding
+<br/>
+SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind
