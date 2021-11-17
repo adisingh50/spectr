@@ -1,7 +1,7 @@
 name: spectr-v1
 channels:
   - conda-forge
-depedencies:
+dependencies:
   # python essentials
   - python=3.8
   - pip
@@ -9,5 +9,5 @@ depedencies:
   - black
   - flake8
   - numpy
-  - opencv
-  - pytorch
+  - opencv=4.5.3
+  - pytorch=1.10.0
