@@ -1,0 +1,11 @@
+{
+    "cam_name": "front_center",
+    "cam_tstamp": 1541665848262473,
+    "lidar_ids": {
+        "0": "front_left",
+        "1": "front_center",
+        "2": "rear_left",
+        "3": "front_right",
+        "4": "rear_right"
+    }
+}
