@@ -1,0 +1,13 @@
+name: spectr-v1
+channels:
+  - conda-forge
+depedencies:
+  # python essentials
+  - python=3.8
+  - pip
+  # important libraries
+  - black
+  - flake8
+  - numpy
+  - opencv
+  - pytorch
