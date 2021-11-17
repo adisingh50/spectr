@@ -1,3 +1,3 @@
-# SPECTR: Semantic Segmentation using CNN Encoding and Transformer Decoding
+# SPECTR: Segmentation using Positional Encoding, CNNs, and Transformers
 <br/>
 SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind
