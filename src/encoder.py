@@ -83,13 +83,13 @@ class Encoder(nn.Module):
         x = self.relu(self.bn5(self.conv5_3(x)))
         output = self.maxpool(x)
 
-        return x
+        return output
+
 
 # Just some dummy test code to test out shapes of I/O tensors. Will remove in the future.
 if __name__ == "__main__":
-    img1 = cv2.imread('sample1.png')
-    img2 = cv2.imread('sample2.png')
-
+    img1 = cv2.imread("sample1.png")
+    img2 = cv2.imread("sample2.png")
 
     img1 = cv2.resize(img1, (358, 225), interpolation=cv2.INTER_AREA)
     img2 = cv2.resize(img2, (358, 225), interpolation=cv2.INTER_AREA)
