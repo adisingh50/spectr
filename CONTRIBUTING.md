@@ -6,6 +6,21 @@
 - Flake8 Linter
     - `Cntrl + Shift + P`, type `Select Linter`, select `flake8`
 
+Have the following setup in `.vscode/settings.json`:
+```
+{
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "editor.rulers": [
+            120
+    ],
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore = E501",
+    ],
+}
+```
+
 
 ### To contribute to new code:
 - Clone repository to your machine
