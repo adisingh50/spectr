@@ -59,7 +59,7 @@ class EncoderDecoder(nn.Module):
 
         Returns:
             The convolved feature map as output, shape (N,H,W,C).
-            Expected output shape: (N, 304, 480, 3).
+            Expected output shape: (N, 64, 304, 480).
         """
 
         # Encoder feed forward
@@ -84,7 +84,6 @@ class EncoderDecoder(nn.Module):
         x = self.maxunpool(x, max_indices_1)
         output = self.relu(self.decoder_bn3(self.decoder_conv5(x)))
         
-        output = output.permute(0, 2, 3, 1)
         return output
 
 
