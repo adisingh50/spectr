@@ -1,9 +1,9 @@
 """Encoder-Decoder Class containing Convolutional Layers."""
 
-import cv2
 import numpy as np
 import torch
 import torch.nn as nn
+import torchvision
 
 
 class EncoderDecoder(nn.Module):
@@ -83,24 +83,22 @@ class EncoderDecoder(nn.Module):
 
         x = self.maxunpool(x, max_indices_1)
         output = self.relu(self.decoder_bn3(self.decoder_conv5(x)))
-        
+
         return output
 
 
 # Just some dummy test code to test out shapes of I/O tensors. Will remove in the future.
 if __name__ == "__main__":
-    img1 = cv2.imread("sample1.png")
-    img2 = cv2.imread("sample2.png")
+    img1 = torchvision.io.read_image("sample1.png")
+    img2 = torchvision.io.read_image("sample2.png")
 
-    img1 = cv2.resize(img1, (480, 304), interpolation=cv2.INTER_AREA)
-    img2 = cv2.resize(img2, (480, 304), interpolation=cv2.INTER_AREA)
+    resize = torchvision.transforms.Resize((304, 480))
+    img1 = resize(img1)
+    img2 = resize(img2)
 
-    img1 = np.expand_dims(img1, axis=0)
-    img2 = np.expand_dims(img2, axis=0)
-    batch = np.concatenate((img1, img2), axis=0)
-
-    batch = torch.from_numpy(batch)
-    batch_input = batch.permute(0, 3, 1, 2) / 255.0
+    img1 = torch.unsqueeze(img1, dim=0)
+    img2 = torch.unsqueeze(img2, dim=0)
+    batch_input = torch.cat((img1, img2), dim=0) / 255.0
 
     print(batch_input.shape)
     encoder = EncoderDecoder()
