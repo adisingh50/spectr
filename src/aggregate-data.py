@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torchvision
+from torchvision.transforms import InterpolationMode
 
 DATA_ROOT = Path(__file__).parent.parent.resolve() / "a2d2_semantic_dataset_subset"
 
@@ -40,7 +41,7 @@ numDataPairs = int(len(imagePaths) / 2)
 
 print(f"Found {numPNGFiles} .png files total.")
 print(f"Found {numDataPairs} image pairs in dataset.")
-resize = torchvision.transforms.Resize((304, 480))
+resize = torchvision.transforms.Resize((304, 480), interpolation=InterpolationMode.NEAREST)
 
 for idx in range(0, len(imagePaths), 2):
     if idx % 100 == 0:
