@@ -61,3 +61,20 @@ class MaskedTransformer(nn.Module):
 
         self.transformer_layers = nn.ModuleList([TransformerLayer(d_model, nhead, dim_feedforward, dropout) for _ in range(num_layers)])
         self.norm = LayerNorm(d_model)
+    
+    def forward(self, image_feature_maps):
+        """
+        Args:
+            image_feature_maps: A tensor of size [batch_size, num_channels, height, width]
+        Output:
+            segmented_image: A tensor of size [batch_size, height, width]
+        """
+        N, H, W, C = image_feature_maps.shape
+        patches = image_feature_maps.unfold(2, self.patch_size, self.patch_size).unfold(3, self.patch_size, self.patch_size)
+        patches = torch.reshape(patches, [N, -1, self.patch_size * self.patch_size * self.num_channels])
+
+        embedded_patches = self.linear_embedder(patches)
+        
+        class_embeddings = self.class_embedder(torch.arange(self.num_classes))
+
+
