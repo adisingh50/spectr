@@ -55,11 +55,8 @@ class EncoderDecoder(nn.Module):
                 H: image height
                 W: image width
 
-                Expected x shape: (N, 3, 304, 480)
-
         Returns:
             The convolved feature map as output, shape (N,H,W,C).
-            Expected output shape: (N, 64, 304, 480).
         """
 
         # Encoder feed forward
