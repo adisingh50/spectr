@@ -39,7 +39,11 @@ class CityScapesDataSet(Dataset):
         if index >= len(self.imageFilePaths):
             raise IndexError("Index is out of bounds.")
 
-        # String formatting imageFilePath to convert it over to a semantic label file path
+        # String formatting on imageFilePath to convert it over to a semantic label file path.
+        # Example:
+        # /srv/datasets/cityscapes/leftImg8bit/train/bremen/bremen/bremen_000157_000019_leftImg8bit.png
+        # /srv/datasets/cityscapes/gtFine/train/bremen/bremen_000157_000019_gtFine_color.png
+
         imageFilePath = self.imageFilePaths[index]
         expectedLabelFilePath = imageFilePath.replace("leftImg8bit", "gtFine", 1)
         expectedLabelFilePath = expectedLabelFilePath.replace("leftImg8bit", "gtFine_color", 1)
