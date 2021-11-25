@@ -16,7 +16,11 @@ import torch.nn.functional as F
 
 class TransformerLayer(nn.Module):
     def __init__(
-        self, d_model: int = 256, nhead: int = 4, dim_feedforward: int = 512, dropout: float = 0.2,
+        self,
+        d_model: int = 256,
+        nhead: int = 4,
+        dim_feedforward: int = 512,
+        dropout: float = 0.2,
     ):
         """Initializing necessary layers for a transformer layer.
 
@@ -43,7 +47,9 @@ class TransformerLayer(nn.Module):
         self.activation = ReLU()
         self.dropout_layer = Dropout(dropout)
 
-    def forward(self, input: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def forward(
+        self, input: torch.Tensor, mask: Optional[torch.Tensor] = None
+    ) -> torch.Tensor:
         """Defining forward pass for transformer layer
 
         Args:
@@ -54,7 +60,10 @@ class TransformerLayer(nn.Module):
         """
         input_norm = self.norm1(input)
         if mask is not None:
-            first_block = self.self_attn(input_norm, input_norm, input_norm, attn_mask=mask)[0] + input
+            first_block = (
+                self.self_attn(input_norm, input_norm, input_norm, attn_mask=mask)[0]
+                + input
+            )
         else:
             first_block = self.self_attn(input_norm, input_norm, input_norm)[0] + input
         norm_first_block = self.norm2(first_block)
@@ -107,7 +116,10 @@ class MaskedTransformer(nn.Module):
         self.positional_embedder = Linear(1, d_model)
 
         self.transformer_layers = ModuleList(
-            [TransformerLayer(d_model, nhead, dim_feedforward, dropout) for _ in range(num_layers)]
+            [
+                TransformerLayer(d_model, nhead, dim_feedforward, dropout)
+                for _ in range(num_layers)
+            ]
         )
         self.norm = LayerNorm(d_model)
 
@@ -132,7 +144,9 @@ class MaskedTransformer(nn.Module):
         )
 
         # Reshapes patches into a 3D tensor of shape [batch_size, num_patches, flattened_patch_size]
-        patches = torch.reshape(patches, [N, -1, self.patch_size * self.patch_size * self.num_channels])
+        patches = torch.reshape(
+            patches, [N, -1, self.patch_size * self.patch_size * self.num_channels]
+        )
         embedded_patches = self.linear_embedder(patches)
 
         # This is another area where we differ from the research paper, they encode positional information differently
@@ -153,25 +167,40 @@ class MaskedTransformer(nn.Module):
             combined_embeddings = decoder_block(combined_embeddings)
         combined_embeddings = self.norm(combined_embeddings)
 
-        processed_image_embeddings = combined_embeddings[:, : image_embeddings.shape[1], :]
-        processed_class_embeddings = combined_embeddings[:, image_embeddings.shape[1] :, :]
+        processed_image_embeddings = combined_embeddings[
+            :, : image_embeddings.shape[1], :
+        ]
+        processed_class_embeddings = combined_embeddings[
+            :, image_embeddings.shape[1] :, :
+        ]
 
         # Normalize image and class embeddings before multiplying
-        processed_image_embeddings /= processed_image_embeddings.norm(dim=-1, keepdim=True)
-        processed_class_embeddings /= processed_class_embeddings.norm(dim=-1, keepdim=True)
+        processed_image_embeddings /= processed_image_embeddings.norm(
+            dim=-1, keepdim=True
+        )
+        processed_class_embeddings /= processed_class_embeddings.norm(
+            dim=-1, keepdim=True
+        )
 
-        class_masks = torch.bmm(processed_image_embeddings, processed_class_embeddings.transpose(1, 2))
+        class_masks = torch.bmm(
+            processed_image_embeddings, processed_class_embeddings.transpose(1, 2)
+        )
 
         # Initial Shape: [batch_size, num_patches, num_classes]
         # New Shape: [batch_size, height // patch_size, width // patch_size, num_classes]
-        class_masks = torch.reshape(class_masks, [N, H // self.patch_size, W // self.patch_size, self.num_classes],)
+        class_masks = torch.reshape(
+            class_masks,
+            [N, H // self.patch_size, W // self.patch_size, self.num_classes],
+        )
 
         # Rearranging so channel is the 2nd dimension to make interpolation easier
         class_masks = class_masks.permute(0, 3, 1, 2)
 
         # Initial Shape: Upsamples from [batch_size, num_classes, height // patch_size, width // patch_size]
         # Upsampled Shape: [batch_size, num_classes, height, width]
-        upsampled_masks = F.interpolate(class_masks, scale_factor=[8, 8], mode="bilinear")
+        upsampled_masks = F.interpolate(
+            class_masks, scale_factor=[8, 8], mode="bilinear"
+        )
         normalized_masks = F.softmax(upsampled_masks, dim=1)
 
         return normalized_masks
