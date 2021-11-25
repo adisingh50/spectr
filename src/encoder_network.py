@@ -1,4 +1,4 @@
-"""Encoder-Decoder Class containing Convolutional Layers."""
+"""Encoder Network Class containing Convolutional Layers."""
 
 import numpy as np
 import torch
@@ -6,7 +6,7 @@ import torch.nn as nn
 import torchvision
 
 
-class EncoderDecoder(nn.Module):
+class EncoderNetwork(nn.Module):
     def __init__(self, k_width=3, pad=1) -> None:
         """Initializes the Encoder object.
 
@@ -14,7 +14,7 @@ class EncoderDecoder(nn.Module):
             k_width (int, optional): Height and width of convolutional kernel. Defaults to 3.
             pad (int, optional): Zero-padding applied to feature maps. Defaults to 1.
         """
-        super(EncoderDecoder, self).__init__()
+        super(EncoderNetwork, self).__init__()
 
         self.relu = nn.ReLU()
         # Encoder: 5 Conv Layers
@@ -65,7 +65,7 @@ class EncoderDecoder(nn.Module):
             64, 64, kernel_size=k_width, stride=1, padding=pad
         )
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Feeds the input tensor forward through the CNN Encoder and Decoder.
 
         Args:
@@ -118,6 +118,6 @@ if __name__ == "__main__":
     batch_input = torch.cat((img1, img2), dim=0) / 255.0
 
     print(batch_input.shape)
-    encoder = EncoderDecoder()
+    encoder = EncoderNetwork()
     output = encoder.forward(batch_input)
     print(output.shape)

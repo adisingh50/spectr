@@ -3,7 +3,7 @@ import pdb
 
 import torch
 import torch.nn as nn
-from encoder_network import EncoderDecoder
+from encoder_network import EncoderNetwork
 from masked_decoder import MaskedTransformer
 from utils import get_num_parameters
 
@@ -18,7 +18,7 @@ class CustomSegmenter(nn.Module):
         """
         super(CustomSegmenter, self).__init__()
 
-        self.encoder = EncoderDecoder(**encoder_config)
+        self.encoder = EncoderNetwork(**encoder_config)
         self.decoder = MaskedTransformer(**decoder_config)
 
     def forward(self, image: torch.Tensor) -> torch.Tensor:
