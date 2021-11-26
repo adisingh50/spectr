@@ -1,4 +1,5 @@
 from typing import Optional
+import pdb
 
 import torch
 import torch.nn as nn
@@ -12,9 +13,10 @@ from torch.nn import (
     ModuleList,
 )
 import torch.nn.functional as F
+import pytorch_lightning as pl
 
 
-class TransformerLayer(nn.Module):
+class TransformerLayer(pl.LightningModule):
     def __init__(
         self,
         d_model: int = 256,
@@ -76,7 +78,7 @@ class TransformerLayer(nn.Module):
         return output
 
 
-class MaskedTransformer(nn.Module):
+class MaskedTransformer(pl.LightningModule):
     def __init__(
         self,
         d_model: int = 256,
@@ -131,6 +133,7 @@ class MaskedTransformer(nn.Module):
         Output:
             segmented_image: A tensor of size [batch_size, num_classes, height, width]
         """
+        #pdb.set_trace()
         N, _, H, W = image_feature_maps.shape
 
         # Make sure height and width are fully divisible by patch size
@@ -151,11 +154,11 @@ class MaskedTransformer(nn.Module):
 
         # This is another area where we differ from the research paper, they encode positional information differently
         # Adds positional information as the value of x at any given index is solely based on the value of that index
-        x = torch.linspace(-1, 1, embedded_patches.shape[1])[:, None]
+        x = torch.linspace(-1, 1, embedded_patches.shape[1], device = self.device)[:, None]
         positional_embeddings = self.positional_embedder(x)
         image_embeddings = embedded_patches + positional_embeddings
 
-        class_embeddings = self.class_embedder(torch.arange(self.num_classes))[None]
+        class_embeddings = self.class_embedder(torch.arange(self.num_classes, device = self.device))[None]
 
         # Expands tensor of shape [num_classes, embed_dim] to [batch_size, num_classes, embed_dim]
         # Allows us to concatenate class embeddings with image embeddings

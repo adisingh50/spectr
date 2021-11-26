@@ -4,9 +4,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torchvision
+import pytorch_lightning as pl
 
-
-class EncoderNetwork(nn.Module):
+class EncoderNetwork(pl.LightningModule):
     def __init__(self, k_width=3, pad=1) -> None:
         """Initializes the Encoder object.
 

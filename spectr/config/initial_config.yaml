@@ -1,0 +1,15 @@
+SpectrConfig:
+  _target_: spectr.spectr_config.SpectrConfig
+  train_dataset_path: "/srv/datasets/cityscapes/leftImg8bit/train/**/*_leftImg8bit.png"
+  train_labels_path: "/srv/datasets/cityscapes/gtFine/train/**/*_color.png"
+  val_dataset_path: "/srv/datasets/cityscapes/leftImg8bit/val/**/*_leftImg8bit.png"
+  val_labels_path: "/srv/datasets/cityscapes/gtFine/val/**/*_color.png"
+  test_dataset_path: "/srv/datasets/cityscapes/leftImg8bit/test/**/*_leftImg8bit.png"
+  test_labels_path: "/srv/datasets/cityscapes/gtFine/test/**/*_color.png"
+  encoder_config: {"k_width": 3, "pad": 1}
+  decoder_config: {"num_channels": 64, "num_layers": 2}
+  batch_size: 8
+  learning_rate: 0.01
+  training_steps: 80000
+  gamma: 0.995
+  accelerator: "ddp"
