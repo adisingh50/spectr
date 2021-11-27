@@ -1,0 +1,29 @@
+Metadata-Version: 2.1
+Name: spectr
+Version: 0.1.0
+Summary: UNKNOWN
+Home-page: UNKNOWN
+Author: Anshul
+Author-email: 
+License: APACHE
+Keywords: computer-vision
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: APACHE License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >= 3.6
+
+# SPECTR: Segmentation using Positional Encoding, CNNs, and Transformers
+<br/>
+SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind  
+  
+## Installation
+```
+conda env create -f environment.yml
+conda activate spectr-v1
+```
+

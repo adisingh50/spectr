@@ -1,0 +1,6 @@
+README.md
+setup.py
+spectr.egg-info/PKG-INFO
+spectr.egg-info/SOURCES.txt
+spectr.egg-info/dependency_links.txt
+spectr.egg-info/top_level.txt
