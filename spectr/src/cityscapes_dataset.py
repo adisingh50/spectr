@@ -10,6 +10,7 @@ from torchvision.transforms import InterpolationMode
 
 from spectr.src.utils import get_classId_from_rgb
 
+
 class CityScapesDataSet(Dataset):
     def __init__(self, imagesRoot: str, labelsRoot: str) -> None:
         """Initializes a CityScapesDataset instance.

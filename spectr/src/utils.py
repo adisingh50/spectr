@@ -36,7 +36,7 @@ def get_classId_from_rgb(rgb: torch.Tensor) -> int:
     Returns:
         int: the unique classId corresponding to the rgb pixel value.
     """
-    if (rgb.shape[0] != 3 or len(rgb.shape) > 1):
+    if rgb.shape[0] != 3 or len(rgb.shape) > 1:
         raise ValueError("rbg tensor must be of size 3")
 
     rgb_to_classId_map = {
@@ -69,12 +69,13 @@ def get_classId_from_rgb(rgb: torch.Tensor) -> int:
         (0, 80, 100): 26,
         (0, 0, 230): 27,
         (119, 11, 32): 28,
-        (0, 0, 142): 29
+        (0, 0, 142): 29,
     }
 
     rgb_tuple = tuple(rgb.tolist())
     classId = rgb_to_classId_map[rgb_tuple]
     return classId
+
 
 if __name__ == "__main__":
     rgb = torch.Tensor([0, 0, 0])
