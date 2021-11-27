@@ -7,3 +7,8 @@ SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind
 conda env create -f environment.yml
 conda activate spectr-v1
 ```
+
+#### Install `spectr` as a module:
+````
+pip install -e .
+````

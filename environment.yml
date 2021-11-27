@@ -11,4 +11,5 @@ dependencies:
   - flake8
   - numpy
   - pytorch
+  - pytorch-lightning
   - torchvision

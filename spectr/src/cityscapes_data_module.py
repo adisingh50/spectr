@@ -4,8 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
-from cityscapes_dataset import CityScapesDataSet
-
+from spectr.src.cityscapes_dataset import CityScapesDataSet
 
 class CityScapesDataModule(pl.LightningDataModule):
     def __init__(self, train_data_dir: str, train_labels_dir: str, vaL_data_dir: str, val_labels_dir: str, test_data_dir: str, test_labels_dir: str, batch_size: int):

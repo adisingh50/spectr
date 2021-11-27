@@ -6,7 +6,7 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from spectr.src.encoder_network import EncoderNetwork
 from spectr.src.masked_decoder import MaskedTransformer
-from utils import get_num_parameters
+from spectr.src.utils import get_num_parameters
 
 
 class CustomSegmenter(pl.LightningModule):
