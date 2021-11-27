@@ -4,8 +4,8 @@ import pdb
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-from encoder_network import EncoderNetwork
-from masked_decoder import MaskedTransformer
+from spectr.src.encoder_network import EncoderNetwork
+from spectr.src.masked_decoder import MaskedTransformer
 from utils import get_num_parameters
 
 
@@ -53,7 +53,7 @@ class CustomSegmenter(pl.LightningModule):
         Returns:
             output_loss: A number indicating cross entropy loss 
         """
-        pdb.set_trace()
+        #pdb.set_trace()
         x, y = curr_batch
         output = self(x)
         output_loss = self.loss(output, y)
@@ -81,7 +81,7 @@ class CustomSegmenter(pl.LightningModule):
         """Method called by Pytorch Lightning to set up optimizer and learning rate scheduler"""
         
         optimizer = torch.optim.SGD(self.parameters(), lr = self.learning_rate)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = self.training_steps // 20)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = self.training_steps // 20, gamma = self.gamma)
         return {'optimizer': optimizer, 'lr_scheduler': scheduler}
 
 if __name__ == "__main__":

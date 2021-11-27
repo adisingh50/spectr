@@ -18,7 +18,7 @@ class CityScapesDataModule(pl.LightningDataModule):
 
         self.train_data_dir = train_data_dir
         self.train_labels_dir = train_labels_dir
-        self.vaL_data_dir = vaL_data_dir
+        self.val_data_dir = vaL_data_dir
         self.val_labels_dir = val_labels_dir
         self.test_data_dir = test_data_dir
         self.test_labels_dir = test_labels_dir

@@ -7,7 +7,7 @@ SpectrConfig:
   test_dataset_path: "/srv/datasets/cityscapes/leftImg8bit/test/**/*_leftImg8bit.png"
   test_labels_path: "/srv/datasets/cityscapes/gtFine/test/**/*_color.png"
   encoder_config: {"k_width": 3, "pad": 1}
-  decoder_config: {"num_channels": 64, "num_layers": 2}
+  decoder_config: {"d_model": 192, "nhead": 3, "num_channels": 64, "num_layers": 12}
   batch_size: 8
   learning_rate: 0.01
   training_steps: 80000
