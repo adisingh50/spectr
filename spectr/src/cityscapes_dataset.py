@@ -50,7 +50,6 @@ class CityScapesDataSet(Dataset):
         expectedLabelFilePath = imageFilePath.replace("leftImg8bit", "gtFine", 1)
         expectedLabelFilePath = expectedLabelFilePath.replace("leftImg8bit", "gtFine_color", 1)
 
-        assert expectedLabelFilePath in self.labelFilePaths
 
         image = self.resize(torchvision.io.read_image(imageFilePath))
         label = self.resize(torchvision.io.read_image(expectedLabelFilePath))
