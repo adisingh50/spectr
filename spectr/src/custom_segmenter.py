@@ -6,11 +6,18 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from spectr.src.encoder_network import EncoderNetwork
 from spectr.src.masked_decoder import MaskedTransformer
-from utils import get_num_parameters
+from spectr.src.utils import get_num_parameters
 
 
 class CustomSegmenter(pl.LightningModule):
-    def __init__(self, encoder_config: Dict[str, Any], decoder_config: Dict[str, Any], learning_rate: float, training_steps: int, gamma: float):
+    def __init__(
+        self,
+        encoder_config: Dict[str, Any],
+        decoder_config: Dict[str, Any],
+        learning_rate: float,
+        training_steps: int,
+        gamma: float,
+    ):
         """Initializes the encoder-decoder CNN network and the decoder masked transformer network
 
         Args:
@@ -38,28 +45,28 @@ class CustomSegmenter(pl.LightningModule):
         Returns:
             segmented_map: A tensor of shape [batch_size, num_classes, height, width]
         """
-        
+
         image_feature_map = self.encoder(image.to(torch.float32))
         segmented_feature_map = self.decoder(image_feature_map)
 
         return segmented_feature_map
-    
+
     def training_step(self, curr_batch: List[torch.Tensor], batch_idx: int) -> float:
         """Training step method called by Pytorch Lightning
-        
+
         Args:
             curr_batch: A list of tensors (x, y). x is a tensor of shape [batch_size, num_channels, height, width], y is a tensor of shape [batch_size, height, width]
-        
+
         Returns:
-            output_loss: A number indicating cross entropy loss 
+            output_loss: A number indicating cross entropy loss
         """
-        #pdb.set_trace()
+        # pdb.set_trace()
         x, y = curr_batch
         output = self(x)
         output_loss = self.loss(output, y)
-        self.log('train_loss', output_loss)
+        self.log("train_loss", output_loss)
         return output_loss
-    
+
     def validation_step(self, val_batch: List[torch.Tensor], batch_idx: int) -> float:
         """Validation step method called by Pytorch Lightning
 
@@ -74,15 +81,16 @@ class CustomSegmenter(pl.LightningModule):
         with torch.no_grad():
             output = self(x)
             output_loss = self.loss(output, y)
-        self.log('val_loss', output_loss)
+        self.log("val_loss", output_loss)
         return output_loss
 
     def configure_optimizers(self):
         """Method called by Pytorch Lightning to set up optimizer and learning rate scheduler"""
-        
-        optimizer = torch.optim.SGD(self.parameters(), lr = self.learning_rate)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = self.training_steps // 20, gamma = self.gamma)
-        return {'optimizer': optimizer, 'lr_scheduler': scheduler}
+
+        optimizer = torch.optim.SGD(self.parameters(), lr=self.learning_rate)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=self.training_steps // 20, gamma=self.gamma)
+        return {"optimizer": optimizer, "lr_scheduler": scheduler}
+
 
 if __name__ == "__main__":
     pdb.set_trace()
