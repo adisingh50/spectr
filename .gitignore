@@ -4,4 +4,5 @@ data/
 *.out
 *.sh
 */__pycache__/
+spectr/__pycache__/
 lightning_logs/
