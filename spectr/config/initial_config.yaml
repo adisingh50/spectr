@@ -1,15 +1,15 @@
 SpectrConfig:
   _target_: spectr.spectr_config.SpectrConfig
-  train_dataset_path: "/coc/scratch/aahluwalia30/cityscapes-processed/leftImg8bit/train/**/*_leftImg8bit.pt"
-  train_labels_path: "/coc/scratch/aahluwalia30/cityscapes-processed/gtFine/train/**/*_color.pt"
-  val_dataset_path: "/coc/scratch/aahluwalia30/cityscapes-processed/leftImg8bit/val/**/*_leftImg8bit.pt"
-  val_labels_path: "/coc/scratch/aahluwalia30/cityscapes-processed/gtFine/val/**/*_color.pt"
-  test_dataset_path: "/coc/scratch/aahluwalia30/cityscapes-processed/leftImg8bit/test/**/*_leftImg8bit.pt"
-  test_labels_path: "/coc/scratch/aahluwalia30/cityscapes-processed/gtFine/test/**/*_color.png"
+  train_dataset_path: "/coc/scratch/aahluwalia30/cityscapes_preprocessed/leftImg8bit/train/**/*_leftImg8bit.pt"
+  train_labels_path: "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/train/**/*_color.pt"
+  val_dataset_path: "/coc/scratch/aahluwalia30/cityscapes_preprocessed/leftImg8bit/val/**/*_leftImg8bit.pt"
+  val_labels_path: "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/val/**/*_color.pt"
+  test_dataset_path: "/coc/scratch/aahluwalia30/cityscapes_preprocessed/leftImg8bit/test/**/*_leftImg8bit.pt"
+  test_labels_path: "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/test/**/*_color.pt"
   encoder_config: {"k_width": 3, "pad": 1}
   decoder_config: {"d_model": 192, "nhead": 3, "num_channels": 64, "num_layers": 12, 'num_classes': 30}
   batch_size: 8
-  learning_rate: 0.01
+  learning_rate: 0.001
   training_steps: 80000
-  gamma: 0.995
+  gamma: 1.0
   accelerator: "ddp"

@@ -45,7 +45,7 @@ class CityScapesDataSet(Dataset):
 
         image = torch.load(imageFilePath)
         label = torch.load(expectedLabelFilePath)
-
+        image = image / 255.0
         return image, label
 
     def __len__(self) -> int:
