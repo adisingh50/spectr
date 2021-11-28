@@ -74,7 +74,7 @@ class TransformerLayer(pl.LightningModule):
         output = self.dropout_layer(output)
         output = self.linear2(output)
         output = self.dropout_layer(output)
-        output += first_block
+        output = output + first_block
         return output
 
 
@@ -163,8 +163,8 @@ class MaskedTransformer(pl.LightningModule):
         # Expands tensor of shape [num_classes, embed_dim] to [batch_size, num_classes, embed_dim]
         # Allows us to concatenate class embeddings with image embeddings
         # This is so the transformer can learn relations between different classes
-        class_embeddings = class_embeddings.expand(image_embeddings.shape[0], -1, -1)
-        combined_embeddings = torch.cat((image_embeddings, class_embeddings), dim=1)
+        expanded_class_embeddings = class_embeddings.expand(image_embeddings.shape[0], -1, -1)
+        combined_embeddings = torch.cat((image_embeddings, expanded_class_embeddings), dim=1)
 
         for decoder_block in self.transformer_layers:
             combined_embeddings = decoder_block(combined_embeddings)
@@ -178,10 +178,10 @@ class MaskedTransformer(pl.LightningModule):
         ]
 
         # Normalize image and class embeddings before multiplying
-        processed_image_embeddings /= processed_image_embeddings.norm(
+        processed_image_embeddings = processed_image_embeddings / processed_image_embeddings.norm(
             dim=-1, keepdim=True
         )
-        processed_class_embeddings /= processed_class_embeddings.norm(
+        processed_class_embeddings = processed_class_embeddings / processed_class_embeddings.norm(
             dim=-1, keepdim=True
         )
 
@@ -204,10 +204,9 @@ class MaskedTransformer(pl.LightningModule):
         upsampled_masks = F.interpolate(
             class_masks, scale_factor=[8, 8], mode="bilinear"
         )
-        normalized_masks = F.softmax(upsampled_masks, dim=1)
+        #normalized_masks = F.softmax(upsampled_masks, dim=1)
 
-        return normalized_masks
-
+        return upsampled_masks
 
 if __name__ == "__main__":
     test_tensor = torch.randn(size=[4, 3, 304, 480])

@@ -1,2 +1,8 @@
 .vscode
 data/
+*.err
+*.out
+*.sh
+*/__pycache__/
+spectr/__pycache__/
+lightning_logs/

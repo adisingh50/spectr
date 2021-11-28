@@ -11,6 +11,7 @@ from spectr.spectr_config import SpectrConfig
 
 
 def main():
+    torch.autograd.set_detect_anomaly(True)
     #pdb.set_trace()
     with hydra.initialize_config_module(config_module="spectr.config"):
         cfg = hydra.compose(config_name="initial_config.yaml")
@@ -24,7 +25,7 @@ def main():
     dataset_length = len(spectr_data_module.cityscapes_dataset_train)
 
     num_epochs = training_steps * batch_size // dataset_length
-    trainer = pl.Trainer(accelerator = spectr_config.accelerator, gpus = spectr_config.num_gpus, max_epochs = num_epochs, fast_dev_run = True)
+    trainer = pl.Trainer(accelerator = spectr_config.accelerator, gpus = spectr_config.num_gpus, max_epochs = num_epochs, fast_dev_run = False)
     trainer.fit(segmenter_model, spectr_data_module)
 
 if __name__ == "__main__":

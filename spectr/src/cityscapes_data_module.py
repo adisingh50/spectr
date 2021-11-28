@@ -45,7 +45,7 @@ class CityScapesDataModule(pl.LightningDataModule):
         return DataLoader(self.cityscapes_dataset_train, self.batch_size, shuffle=True, num_workers=8)
 
     def val_dataloader(self):
-        return DataLoader(self.cityscapes_dataset_val, self.batch_size, shuffle=True, num_workers=4)
+        return DataLoader(self.cityscapes_dataset_val, self.batch_size, shuffle=False, num_workers=4)
 
     def test_dataloader(self):
-        return DataLoader(self.cityscapes_dataset_test, self.batch_size, shuffle=True, num_workers=2)
+        return DataLoader(self.cityscapes_dataset_test, self.batch_size, shuffle=False, num_workers=2)

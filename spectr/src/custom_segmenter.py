@@ -60,10 +60,10 @@ class CustomSegmenter(pl.LightningModule):
         Returns:
             output_loss: A number indicating cross entropy loss
         """
-        # pdb.set_trace()
+        #pdb.set_trace()
         x, y = curr_batch
         output = self(x)
-        output_loss = self.loss(output, y)
+        output_loss = self.loss(output, y.to(torch.int64))
         self.log("train_loss", output_loss)
         return output_loss
 
@@ -80,7 +80,7 @@ class CustomSegmenter(pl.LightningModule):
         x, y = val_batch
         with torch.no_grad():
             output = self(x)
-            output_loss = self.loss(output, y)
+            output_loss = self.loss(output, y.to(torch.int64))
         self.log("val_loss", output_loss)
         return output_loss
 
