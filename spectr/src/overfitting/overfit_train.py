@@ -1,6 +1,7 @@
 """Testing File that Overfits SPECTR model to 1 batch of data. Used to gain insight into learning performance."""
 
 import pdb
+import os
 
 import hydra
 from hydra.utils import instantiate
@@ -31,8 +32,7 @@ def main():
     y = y.cuda()
 
     # Define Loss and Optimizer
-    class_weights = get_class_weights(y)
-    ce_loss = nn.CrossEntropyLoss(weight=class_weights).cuda()
+    ce_loss = nn.CrossEntropyLoss().cuda()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
     torch.save(x, "x.pth")
@@ -52,6 +52,12 @@ def main():
 
     # Save this model to file
     torch.save(model.state_dict(), "./overfit_model.pth")
+
+    # Create necessary directories to store visualizations, if they don't already exist
+    os.makedirs("overfit_results", exist_ok=True)
+    os.makedirs("overfit_results/images", exist_ok=True)
+    os.makedirs("overfit_results/ground_truth", exist_ok=True)
+    os.makedirs("overfit_results/pred_labels", exist_ok=True)
 
     # Visualize images and predicted labels in batch
     print("Finished Overfit Training. Visualizing output.")

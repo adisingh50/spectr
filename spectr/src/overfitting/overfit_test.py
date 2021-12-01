@@ -27,9 +27,14 @@ def main():
     y_pred = overfit_model.forward(x)
 
     # Calculate mIoU
-    IOU = torchmetrics.IoU(num_classes=30)
-    iou = IOU(y_pred, y.to(torch.int32))
-    print(f"Overfit Model IoU: {iou}")
+    IOU = torchmetrics.IoU(num_classes=30, reduction="elementwise_mean")
+    mIoU = IOU(y_pred, y.to(torch.int32))
+    print(f"Overfit Model IoU: {mIoU}")
+
+    # Calculate classwise IoU
+    classIoU = torchmetrics.IoU(num_classes=30, reduction="none")
+    cIoU = classIoU(y_pred, y.to(torch.int32))
+    print(f"Classwise IoU: {cIoU}")
 
 
 if __name__ == "__main__":
