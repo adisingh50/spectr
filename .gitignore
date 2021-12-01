@@ -6,3 +6,7 @@ data/
 */__pycache__/
 spectr/__pycache__/
 lightning_logs/
+
+# Files in overfitting folder
+*.pth
+overfit_results/
