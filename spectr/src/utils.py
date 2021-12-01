@@ -140,12 +140,6 @@ def get_classId_from_rgb(rgb: torch.Tensor) -> int:
     classId = rgb_to_classId_map[rgb_tuple]
     return classId
 
-
-def compute_IoU(y_pred: torch.Tensor, y: torch.Tensor) -> int:
-    IOU = torchmetrics.IoU(num_classes=30)
-    iou = IOU(y_pred, y)
-    return iou
-
 if __name__ == "__main__":
     rgb = torch.Tensor([0, 0, 0])
     classId = get_classId_from_rgb(rgb)
