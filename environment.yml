@@ -9,6 +9,7 @@ dependencies:
   # important libraries
   - black
   - flake8
+  - hydra-core
   - numpy
   - pytorch
   - pytorch-lightning

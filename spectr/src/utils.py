@@ -2,7 +2,71 @@
 
 import torch
 import torch.nn as nn
+import torchmetrics
+import pdb
 
+
+def get_colored_label(label: torch.Tensor) -> torch.Tensor:
+    """Converts a 2D label tensor to a 2D semantically segmented image.
+
+    Args:
+        label (torch.Tensor): tensor containing class IDs [0, C), shape (H,W).
+            C = number of classes
+
+    Returns:
+        label_image (torch.Tensor): a colored semantically segmented label image, shape (3,H,W).
+    """
+    classID_rgb_map = {
+        0: (0, 0, 0),
+        1: (111, 74, 0),
+        2: (81, 0, 81),
+        3: (128, 64, 128),
+        4: (244, 35, 232),
+        5: (250, 170, 160),
+        6: (230, 150, 140),
+        7: (70, 70, 70),
+        8: (102, 102, 156),
+        9: (190, 153, 153),
+        10: (180, 165, 180),
+        11: (150, 100, 100),
+        12: (150, 120, 90),
+        13: (153, 153, 153),
+        14: (250, 170, 30),
+        15: (220, 220, 0),
+        16: (107, 142, 35),
+        17: (152, 251, 152),
+        18: (70, 130, 180),
+        19: (220, 20, 60),
+        20: (255, 0, 0),
+        21: (0, 0, 142),
+        22: (0, 0, 70),
+        23: (0, 60, 100),
+        24: (0, 0, 90),
+        25: (0, 0, 110),
+        26: (0, 80, 100),
+        27: (0, 0, 230),
+        28: (119, 11, 32),
+        29: (0, 0, 142),
+    }
+    H, W = label.shape
+
+    label_image = torch.zeros(3, H, W).cuda()
+    for row in range(H):
+        for col in range(W):
+            classId = label[row, col].item()
+            color = classID_rgb_map[classId]
+            label_image[:,row,col] = torch.Tensor(color)
+
+    return label_image
+
+def get_class_weights(y: torch.Tensor) -> torch.Tensor:
+    N, H, W = y.shape
+    totalPixels = N*H*W
+
+    flattened = torch.flatten(y).to(torch.int32)
+    classCounts = torch.bincount(flattened)
+    weights = 1 - classCounts / totalPixels
+    return weights
 
 def get_num_parameters(model: nn.Module) -> int:
     """Returns number of individual trainable parameters
