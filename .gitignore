@@ -6,3 +6,6 @@ data/
 */__pycache__/
 spectr/__pycache__/
 lightning_logs/
+
+# Saved tensors to ignore in overfitting folder
+*.pth
