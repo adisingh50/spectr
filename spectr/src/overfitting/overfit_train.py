@@ -2,6 +2,8 @@
 
 import pdb
 
+import hydra
+from hydra.utils import instantiate
 import torch
 import torch.nn as nn
 import torchmetrics
@@ -13,51 +15,32 @@ from spectr.src.utils import *
 
 
 def main():
-    # Hyperparameters
-    encoder_config = {"k_width": 3, "pad": 1}
-    decoder_config = {"d_model": 192, "nhead": 3, "num_channels": 64, "num_layers": 6, "num_classes": 30}
-    batch_size = 8
-    learning_rate = 0.01
-    training_steps = 80000
-    gamma = 1.0
-    num_epochs = 1000
+    with hydra.initialize_config_module(config_module="spectr.config"):
+        cfg = hydra.compose(config_name="initial_config.yaml")
+        spectr_config = instantiate(cfg.SpectrConfig)
 
-    # Define CityScapesDataModule
-    train_dataset_path = "/coc/scratch/aahluwalia30/cityscapes_preprocessed/leftImg8bit/train/**/*_leftImg8bit.pt"
-    train_labels_path = "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/train/**/*_color.pt"
-    val_dataset_path = "/coc/scratch/aahluwalia30/cityscapes_preprocessed/leftImg8bit/val/**/*_leftImg8bit.pt"
-    val_labels_path = "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/val/**/*_color.pt"
-    test_dataset_path = "/coc/scratch/aahluwalia30/cityscapes_preprocessed/leftImg8bit/test/**/*_leftImg8bit.pt"
-    test_labels_path = "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/test/**/*_color.pt"
-    batch_size = 8
+    # Define Model, Dataloader
+    model = spectr_config.custom_segmenter.cuda()
+    print(get_num_parameters(model))
+    spectr_data_module = spectr_config.data_module
+    trainDataLoader = spectr_data_module.train_dataloader()
 
-    dataModule = CityScapesDataModule(
-        train_dataset_path,
-        train_labels_path,
-        val_dataset_path,
-        val_labels_path,
-        test_dataset_path,
-        test_labels_path,
-        batch_size,
-    )
-    trainDataLoader = dataModule.train_dataloader()
+    # Get a single batch
     x, y = next(iter(trainDataLoader))
     x = x.cuda()
     y = y.cuda()
 
+    # Define Loss and Optimizer
+    class_weights = get_class_weights(y)
+    ce_loss = nn.CrossEntropyLoss(weight=class_weights).cuda()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
     torch.save(x, "x.pth")
     torch.save(y, "y.pth")
 
-    # Define 3 main components
-    model = CustomSegmenter(encoder_config, decoder_config, learning_rate, training_steps, gamma).cuda()
-    print(get_num_parameters(model))
-
-    class_weights = get_class_weights(y)
-    ce_loss = nn.CrossEntropyLoss(weight=class_weights).cuda()
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-
     # Main Training Loop
     model.train()
+    num_epochs = 1000
     for epoch in range(num_epochs):
         optimizer.zero_grad()
         y_pred = model.forward(x)
@@ -67,12 +50,14 @@ def main():
 
         print(f"Epoch: {epoch}  Loss: {loss}")
 
+    # Save this model to file
     torch.save(model.state_dict(), "./overfit_model.pth")
 
     # Visualize images and predicted labels in batch
     print("Finished Overfit Training. Visualizing output.")
     model.eval()
-    for i in range(8):
+    batch_size = x.shape[0]
+    for i in range(batch_size):
         image = x[i, :, :, :]
         torchvision.utils.save_image(image, f"overfit_results/images/image{i}.png")
 

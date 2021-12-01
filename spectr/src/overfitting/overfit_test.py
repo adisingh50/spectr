@@ -16,7 +16,7 @@ def main():
         cfg = hydra.compose(config_name="initial_config.yaml")
         spectr_config = instantiate(cfg.SpectrConfig)
 
-    spectr_data_module = spectr_config.data_module
+    # Define and load overfit model from file
     overfit_model = spectr_config.custom_segmenter
     overfit_model.load_state_dict(torch.load("overfit_model.pth"))
 
