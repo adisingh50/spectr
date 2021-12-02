@@ -5,7 +5,8 @@ import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 from spectr.src.encoder_network import EncoderNetwork
-from spectr.src.masked_decoder import MaskedTransformer
+from spectr.src.resnet_feature_extractor import SpectrResnet
+from spectr.src.masked_decoder import ContextMaskedTransformer
 from spectr.src.utils import get_num_parameters
 
 
@@ -29,12 +30,17 @@ class CustomSegmenter(pl.LightningModule):
         """
         super(CustomSegmenter, self).__init__()
 
-        self.encoder = EncoderNetwork(**encoder_config)
-        self.decoder = MaskedTransformer(**decoder_config)
+        #self.encoder = EncoderNetwork(**encoder_config)
+        #self.decoder = MaskedTransformer(**decoder_config)
+        self.encoder = SpectrResnet()
+        self.decoder = ContextMaskedTransformer(**decoder_config)
         self.learning_rate = learning_rate
         self.training_steps = training_steps
         self.gamma = gamma
         self.loss = nn.CrossEntropyLoss()
+
+        for param in self.encoder.parameters():
+            param.requires_grad = False
 
     def forward(self, image: torch.Tensor) -> torch.Tensor:
         """Generates segmentation map for image
@@ -47,7 +53,7 @@ class CustomSegmenter(pl.LightningModule):
         """
 
         image_feature_map = self.encoder(image.to(torch.float32))
-        segmented_feature_map = self.decoder(image_feature_map)
+        segmented_feature_map = self.decoder(image, image_feature_map)
 
         return segmented_feature_map
 
@@ -96,9 +102,9 @@ if __name__ == "__main__":
     pdb.set_trace()
     test_batch = torch.randn(size=[4, 3, 480, 304])
     encoder_config = {"k_width": 3, "pad": 1}
-    decoder_config = {"num_channels": 64, "num_layers": 2}
+    decoder_config = {"num_channels": 3, "num_layers": 2}
 
-    custom_segmenter = CustomSegmenter(encoder_config, decoder_config)
+    custom_segmenter = CustomSegmenter(encoder_config, decoder_config, learning_rate = 0.001, training_steps = 80000, gamma = 0.995)
     total_parameters = get_num_parameters(custom_segmenter)
     print(f"Total number of parameters is {total_parameters}")
     output_segmentation = custom_segmenter(test_batch)
