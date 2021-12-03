@@ -230,8 +230,8 @@ class ContextTransformerLayer(pl.LightningModule):
         self.dim_feedforward = dim_feedforward
         self.dropout = dropout
 
-        self.self_attn = MultiheadAttention(d_model, nhead, dropout = dropout, batch_first = True)
-        self.cross_attn = MultiheadAttention(d_model, nhead, dropout = dropout, batch_first = True)
+        self.self_attn = MultiheadAttention(d_model, nhead, dropout = dropout)
+        self.cross_attn = MultiheadAttention(d_model, nhead, dropout = dropout)
 
         self.linear1 = Linear(d_model, dim_feedforward)
         self.linear2 = Linear(dim_feedforward, d_model)
@@ -255,6 +255,7 @@ class ContextTransformerLayer(pl.LightningModule):
         Returns:
             output: A tensor of shape [batch_size, num_patches, embed_dim]
         """
+        input = input.transpose(0, 1)
         input_norm = self.norm1(input)
         if mask is not None:
             first_block = (
@@ -265,6 +266,7 @@ class ContextTransformerLayer(pl.LightningModule):
             first_block = self.self_attn(input_norm, input_norm, input_norm)[0] + input
         norm_first_block = self.norm2(first_block)
         if context is not None:
+            context = context.transpose(0, 1)
             second_block = self.cross_attn(norm_first_block, context.float(), context.float())[0]
             norm_first_block = norm_first_block + second_block
             norm_first_block = self.norm3(norm_first_block)
@@ -274,7 +276,7 @@ class ContextTransformerLayer(pl.LightningModule):
         output = self.linear2(output)
         output = self.dropout_layer(output)
         output = output + first_block
-        return output
+        return output.transpose(0, 1)
 
 class ContextMaskedTransformer(pl.LightningModule):
     def __init__(
@@ -336,7 +338,6 @@ class ContextMaskedTransformer(pl.LightningModule):
         Output:
             segmented_image: A tensor of size [batch_size, num_classes, height, width]
         """
-        pdb.set_trace()
         N, _, H, W = images.shape
 
         # Make sure height and width are fully divisible by patch size

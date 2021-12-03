@@ -100,7 +100,7 @@ class CustomSegmenter(pl.LightningModule):
 
 if __name__ == "__main__":
     pdb.set_trace()
-    test_batch = torch.randn(size=[4, 3, 480, 304])
+    test_batch = torch.randn(size=[4, 3, 256, 512])
     encoder_config = {"k_width": 3, "pad": 1}
     decoder_config = {"num_channels": 3, "num_layers": 2}
 
