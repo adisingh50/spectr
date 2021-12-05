@@ -16,7 +16,6 @@ class SpectrConfig:
             val_labels_path: Where the validation labels are located
             test_dataset_path: Where the test images are located
             test_labels_path: Where the test labels are located
-            encoder_config: Dictionary that represents paramters for CNN encoder
             decoder_config: Dictionary that represents parameters for Transformer Mask Decoder
             batch_size: Number of samples to use in every batch
             learning_rate: Starting learning rate for SGD optimizer
