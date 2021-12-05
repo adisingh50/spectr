@@ -1,9 +1,11 @@
 """File containing generenic utility functions for the repository"""
 
+import glob
+import pdb
+
 import torch
 import torch.nn as nn
 import torchmetrics
-import pdb
 
 
 def get_colored_label(label: torch.Tensor) -> torch.Tensor:
@@ -55,18 +57,37 @@ def get_colored_label(label: torch.Tensor) -> torch.Tensor:
         for col in range(W):
             classId = label[row, col].item()
             color = classID_rgb_map[classId]
-            label_image[:,row,col] = torch.Tensor(color)
+            label_image[:, row, col] = torch.Tensor(color)
 
     return label_image
 
+
 def get_class_weights(y: torch.Tensor) -> torch.Tensor:
+    """Gets the relative class weights to perform weighted cross entropy loss. Uses the formula below.I f w_c is
+    greater, then it means the loss function will penalize the model more for incorrectly classifying a pixel that
+    belongs to class c (since it's a minority class).
+
+                        w_c = (1 - n_c/M)^7
+
+            w_c: weight of class c
+            n_c: number of pixels belonging to class c
+            M: total number of pixels in the batch of labels
+
+    Args:
+        y (torch.Tensor): semantic segmentation labels for a batch of images, shape [batch_size, height, width].
+
+    Returns:
+        torch.Tensor: weights for each class, shape [num_classes,].
+    """
     N, H, W = y.shape
-    totalPixels = N*H*W
+    totalPixels = N * H * W
 
     flattened = torch.flatten(y).to(torch.int32)
     classCounts = torch.bincount(flattened)
     weights = 1 - classCounts / totalPixels
+    weights = torch.pow(weights, 7)
     return weights
+
 
 def get_num_parameters(model: nn.Module) -> int:
     """Returns number of individual trainable parameters
@@ -140,7 +161,25 @@ def get_classId_from_rgb(rgb: torch.Tensor) -> int:
     classId = rgb_to_classId_map[rgb_tuple]
     return classId
 
+
+def get_class_distribution() -> torch.Tensor:
+    """Gets the class counts for all semantic segmented labels within the Cityscapes train dataset. Used to generate
+    a bar plot of class ID distribution.
+
+    Returns:
+        torch.Tensor: class counts for every class, array of shape [num_classes,].
+    """
+    labelFilePaths = glob.glob(
+        "/coc/scratch/aahluwalia30/cityscapes_preprocessed/gtFine/train/**/*_color.pt", recursive=True
+    )
+    trainLabels = [torch.load(filePath) for filePath in labelFilePaths]
+    trainLabels = torch.stack(trainLabels)
+
+    flattened = torch.flatten(trainLabels).to(torch.int32)
+    classCounts = torch.bincount(flattened)
+
+    return classCounts
+
+
 if __name__ == "__main__":
-    rgb = torch.Tensor([0, 0, 0])
-    classId = get_classId_from_rgb(rgb)
-    print(classId)
+    get_class_distribution()
