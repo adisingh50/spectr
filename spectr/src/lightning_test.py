@@ -22,8 +22,8 @@ def evaluate_train_batch(model: pl.LightningModule):
     """
     print("Training Batch Results:")
     # Inference on Training Batch
-    trainX = torch.load("/srv/scratch/asingh682/spectr/spectr/src/overfitting/x.pth").cpu()
-    trainY = torch.load("/srv/scratch/asingh682/spectr/spectr/src/overfitting/y.pth").cpu()
+    trainX = torch.load("./batches/x.pth").cpu()
+    trainY = torch.load("./batches/y.pth").cpu()
 
     train_y_pred = model.forward(trainX)
     IOU = torchmetrics.IoU(num_classes=30, reduction="elementwise_mean")
@@ -144,7 +144,7 @@ def main():
     # Init Data Module and Encoder Model
     torch.autograd.set_detect_anomaly(True)
     with hydra.initialize_config_module(config_module="spectr.config"):
-        cfg = hydra.compose(config_name="config_122.yaml")
+        cfg = hydra.compose(config_name="config.yaml")
         spectr_config = instantiate(cfg.SpectrConfig)
     
     spectr_data_module = spectr_config.data_module

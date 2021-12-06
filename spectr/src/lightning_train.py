@@ -1,3 +1,6 @@
+"""Training script that utilizes Pytorch Lightning to train Deep Learning Model utilizing the hyperparameters in
+the config file."""
+
 import pdb
 
 import torch
@@ -14,7 +17,7 @@ def main():
     torch.autograd.set_detect_anomaly(True)
     #pdb.set_trace()
     with hydra.initialize_config_module(config_module="spectr.config"):
-        cfg = hydra.compose(config_name="config_122.yaml")
+        cfg = hydra.compose(config_name="config.yaml")
         spectr_config = instantiate(cfg.SpectrConfig)
     
     spectr_data_module = spectr_config.data_module
