@@ -4,12 +4,8 @@ SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind
   
 ![SPECTR Diagram](spectr_diagram.png)  
 
-## Validation Batch: 
-<pre>
-            Images                                 Ground Truth                        Predicted Output  
-</pre>
+## Visual Results (Cityscapes Image and Predicted Output): 
 ![images_slideshow](gifs/images_slideshow.gif)
-![ground_truth_slideshow](gifs/gt_slideshow.gif)
 ![pred_output_slideshow](gifs/pred_slideshow.gif)
 
 ## Installation
