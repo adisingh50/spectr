@@ -2,7 +2,11 @@
 <br/>
 SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind  
   
-![SPECTR Diagram](spectr_diagram.png)
+![SPECTR Diagram](spectr_diagram.png)  
+
+## Visual Results (Cityscapes Image and Predicted Output): 
+![images_slideshow](gifs/images_slideshow.gif)
+![pred_output_slideshow](gifs/pred_slideshow.gif)
 
 ## Installation
 To install SPECTR, we first much create a conda environment with the appropriate libraries.
