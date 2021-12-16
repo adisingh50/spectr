@@ -2,7 +2,15 @@
 <br/>
 SPECTR by Anshul Ahluwalia, Aditya Singh, and Ranveer Thind  
   
-![SPECTR Diagram](spectr_diagram.png)
+![SPECTR Diagram](spectr_diagram.png)  
+
+## Validation Batch: 
+<pre>
+            Images                                 Ground Truth                        Predicted Output  
+</pre>
+![images_slideshow](gifs/images_slideshow.gif)
+![ground_truth_slideshow](gifs/gt_slideshow.gif)
+![pred_output_slideshow](gifs/pred_slideshow.gif)
 
 ## Installation
 To install SPECTR, we first much create a conda environment with the appropriate libraries.
